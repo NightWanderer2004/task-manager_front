@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container } from '@mui/material'
+import AuthPage from './pages/Auth'
+import HomePage from './pages/Home'
+import { Route, Routes } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute'
+import { useAuth } from './hooks/useAuth'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+   // @ts-expect-error
+   const { logout } = useAuth()
+
+   return (
+      <div className='App'>
+         <Container>
+            <button onClick={logout}>LOGOUT</button>
+            <Routes>
+               <Route element={<ProtectedRoute />}>
+                  <Route index path='/' element={<HomePage />} />
+               </Route>
+               <Route path='/*' element={<AuthPage />} />
+            </Routes>
+         </Container>
+      </div>
+   )
 }
 
-export default App;
+export default App
