@@ -1,29 +1,24 @@
 import { useMutation } from '@apollo/client'
 import { LOGIN_USER } from '../../graphql/mutations'
-import { useNavigate } from 'react-router-dom'
+import AuthForm, { FormValues } from './AuthForm'
 import { useAuth } from '../../hooks/useAuth'
-import AuthForm from './AuthForm'
+import { useNavigate } from 'react-router-dom'
 
-const LoginForm = (): JSX.Element | string => {
+const LoginForm = () => {
    const navigate = useNavigate()
-   // @ts-expect-error
    const { login } = useAuth()
-   const [loginUser, { loading, error }] = useMutation(LOGIN_USER)
-
-   const handleLogin = async (email: string, password: string) => {
+   const [loginUser, { error }] = useMutation(LOGIN_USER)
+   const handleLogin = async (values: FormValues) => {
       try {
          const { data } = await loginUser({
-            variables: {
-               input: {
-                  email,
-                  password,
-               },
-            },
+            variables: { input: values },
          })
-         login(data.login.token)
-         navigate('/')
+         if (data) {
+            login(data.login.token, data.login.refreshToken, data.login.user.id)
+            navigate('/')
+         }
       } catch (error) {
-         console.log(error)
+         console.error(error)
       }
    }
 

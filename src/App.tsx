@@ -1,23 +1,22 @@
 import { Container } from '@mui/material'
-import AuthPage from './pages/Auth'
-import HomePage from './pages/Home'
+import CategoriesPage from './pages/Categories'
 import { Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
-import { useAuth } from './hooks/useAuth'
+import CategoryPage from './pages/Category'
+import SignupForm from './components/forms/SignupForm'
+import LoginForm from './components/forms/LoginForm'
 
 function App() {
-   // @ts-expect-error
-   const { logout } = useAuth()
-
    return (
       <div className='App'>
          <Container>
-            <button onClick={logout}>LOGOUT</button>
             <Routes>
                <Route element={<ProtectedRoute />}>
-                  <Route index path='/' element={<HomePage />} />
+                  <Route index element={<CategoriesPage />} />
+                  <Route path=':categoryId' element={<CategoryPage />} />
                </Route>
-               <Route path='/*' element={<AuthPage />} />
+               <Route path='sign-up' element={<SignupForm />} />
+               <Route path='login' element={<LoginForm />} />
             </Routes>
          </Container>
       </div>

@@ -1,26 +1,29 @@
 import { Box, Button, Container, CssBaseline, Grid, TextField, Typography, Link } from '@mui/material'
-import { useState } from 'react'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+import { Link as RouterLink } from 'react-router-dom'
+
+const validationSchema = Yup.object().shape({
+   email: Yup.string().email('Invalid email address').required('Email is required'),
+   password: Yup.string().required('Password is required'),
+})
+
+export type FormValues = {
+   email: string
+   password: string
+}
 
 type FormProps = {
-   handleSubmit: (email: string, password: string) => Promise<void>
-   error: string | undefined
+   handleSubmit: (values: FormValues) => Promise<void>
    buttonText: string
+   error: string | undefined | any
    linkText: string
    linkTo: string
 }
 
-const AuthForm = ({ handleSubmit, error, buttonText, linkText, linkTo }: FormProps): JSX.Element => {
-   const [email, setEmail] = useState('')
-   const [password, setPassword] = useState('')
-   const navigate = useNavigate()
-   // @ts-expect-error
-   const { login } = useAuth()
-
-   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      await handleSubmit(email, password)
+const AuthForm = ({ handleSubmit, buttonText, error, linkText, linkTo }: FormProps) => {
+   const handleFormSubmit = async (values: FormValues) => {
+      await handleSubmit(values)
    }
 
    return (
@@ -34,48 +37,48 @@ const AuthForm = ({ handleSubmit, error, buttonText, linkText, linkTo }: FormPro
                alignItems: 'center',
             }}
          >
-            <Typography component='h1' variant='h5'>
+            <Typography component='h1' variant='h5' sx={{ marginBottom: 3 }}>
                {buttonText}
             </Typography>
-            <Box component='form' noValidate onSubmit={handleFormSubmit} sx={{ mt: 3 }}>
-               <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                     <TextField
-                        required
-                        fullWidth
-                        id='email'
-                        label='Email Address'
-                        name='email'
-                        autoComplete='email'
-                        onChange={e => setEmail(e.target.value)}
-                        error={!!error}
-                        helperText={error}
-                     />
-                  </Grid>
-                  <Grid item xs={12}>
-                     <TextField
-                        required
-                        fullWidth
-                        name='password'
-                        label='Password'
-                        type='password'
-                        id='password'
-                        autoComplete='new-password'
-                        onChange={e => setPassword(e.target.value)}
-                     />
-                  </Grid>
-               </Grid>
-               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                  {buttonText}
-               </Button>
-               <Grid container justifyContent='center'>
-                  <Grid item>
-                     <RouterLink to={linkTo}>
-                        <Link>{linkText}</Link>
-                     </RouterLink>
-                  </Grid>
-               </Grid>
-            </Box>
+            <Formik initialValues={{ email: '', password: '' }} validationSchema={validationSchema} onSubmit={handleFormSubmit}>
+               {({ errors }) => (
+                  <Form>
+                     <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                           <Field
+                              name='email'
+                              as={TextField}
+                              label='Email'
+                              fullWidth
+                              error={!!errors.email || !!error}
+                              helperText={error || <ErrorMessage name='email' />}
+                           />
+                        </Grid>
+                        <Grid item xs={12}>
+                           <Field
+                              name='password'
+                              as={TextField}
+                              label='Password'
+                              type='password'
+                              fullWidth
+                              error={!!errors.password}
+                              helperText={<ErrorMessage name='password' />}
+                           />
+                        </Grid>
+                     </Grid>
+                     <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
+                        {buttonText}
+                     </Button>
+                     <Grid container justifyContent='center'>
+                        <Grid item>
+                           <RouterLink to={linkTo}>
+                              <Link>{linkText}</Link>
+                           </RouterLink>
+                        </Grid>
+                     </Grid>
+                  </Form>
+               )}
+            </Formik>
          </Box>
       </Container>
    )
