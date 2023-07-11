@@ -37,9 +37,15 @@ const AddTask = (props: Props) => {
                      <DatePicker
                         label='Start date'
                         value={values.dateStart}
+                        disablePast
                         onChange={(newValue: Dayjs | null) => setFieldValue('dateStart', newValue)}
                      />
-                     <DatePicker label='End date' value={values.dateEnd} onChange={(newValue: Dayjs | null) => setFieldValue('dateEnd', newValue)} />
+                     <DatePicker
+                        label='End date'
+                        value={values.dateEnd}
+                        disablePast
+                        onChange={(newValue: Dayjs | null) => setFieldValue('dateEnd', newValue)}
+                     />
                   </Stack>
                   <Button sx={{ fontWeight: 'bold' }} fullWidth type='submit' variant='contained'>
                      Add
