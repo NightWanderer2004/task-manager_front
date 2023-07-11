@@ -7,6 +7,7 @@
 -  GraphQL
 -  TypeScript
 -  Material UI
+-  Formik
 
 ### How to run:
 
