@@ -1,16 +1,11 @@
 import { Box, Modal, Typography } from '@mui/material'
-import { Formik } from 'formik'
 import { ReactNode } from 'react'
 
 type Props = {
-   withFormik?: boolean
    open: boolean
    handleClose: () => void
-   initValues?: { name: string; dateStart?: string; dateEnd?: string }
-   submitHandler: (values: { name: string; dateStart?: string; dateEnd?: string }) => void
    title: string
-   validationSchema?: any
-   children: ReactNode | { (props: { errors: any }): JSX.Element }
+   children: ReactNode
 }
 
 const style = {
@@ -31,13 +26,7 @@ const Popup = (props: Props) => {
          <Box sx={style}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                <Typography variant='h5'>{props.title}</Typography>
-               <Formik
-                  initialValues={props.initValues || { name: '', dateStart: '', dateEnd: '' }}
-                  validationSchema={props.validationSchema}
-                  onSubmit={props.submitHandler}
-               >
-                  {props.children}
-               </Formik>
+               {props.children}
             </Box>
          </Box>
       </Modal>

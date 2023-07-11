@@ -1,5 +1,5 @@
 import { Button, TextField } from '@mui/material'
-import { ErrorMessage, Field, Form } from 'formik'
+import { ErrorMessage, Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import Popup from '../../Popup'
 
@@ -19,23 +19,17 @@ const initValues = {
 
 const AddCategory = (props: Props) => {
    return (
-      <Popup
-         withFormik={true}
-         open={props.open}
-         handleClose={props.handleClose}
-         initValues={initValues}
-         submitHandler={props.submitHandler}
-         validationSchema={validationSchema}
-         title='Add category'
-      >
-         {({ errors }) => (
-            <Form>
-               <Field name='name' as={TextField} label='Category name' fullWidth error={!!errors.name} helperText={<ErrorMessage name='name' />} />
-               <Button sx={{ fontWeight: 'bold', marginTop: 1 }} fullWidth type='submit' variant='contained'>
-                  Add
-               </Button>
-            </Form>
-         )}
+      <Popup open={props.open} handleClose={props.handleClose} title='Add category'>
+         <Formik initialValues={initValues} validationSchema={validationSchema} onSubmit={props.submitHandler}>
+            {({ errors }) => (
+               <Form>
+                  <Field name='name' as={TextField} label='Category name' fullWidth error={!!errors.name} helperText={<ErrorMessage name='name' />} />
+                  <Button sx={{ fontWeight: 'bold', marginTop: 1 }} fullWidth type='submit' variant='contained'>
+                     Add
+                  </Button>
+               </Form>
+            )}
+         </Formik>
       </Popup>
    )
 }

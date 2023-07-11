@@ -6,7 +6,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink, ApolloLink } fro
 import { BrowserRouter } from 'react-router-dom'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { AuthProvider, useAuth } from './hooks/useAuth'
+import { AuthProvider } from './hooks/useAuth'
 
 const httpLink = new HttpLink({ uri: 'http://localhost:3000/graphql' })
 const authLink = new ApolloLink((operation, forward) => {

@@ -8,15 +8,15 @@ const LoginForm = () => {
    const navigate = useNavigate()
    const { login } = useAuth()
    const [loginUser, { error }] = useMutation(LOGIN_USER)
+
    const handleLogin = async (values: FormValues) => {
       try {
-         const { data } = await loginUser({
+         await loginUser({
             variables: { input: values },
-         })
-         if (data) {
+         }).then(({ data }) => {
             login(data.login.token, data.login.refreshToken, data.login.user.id)
             navigate('/')
-         }
+         })
       } catch (error) {
          console.error(error)
       }

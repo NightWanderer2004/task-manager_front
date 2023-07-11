@@ -19,12 +19,28 @@ const CategoryItem = (props: Props) => {
    const handleClose = () => setAnchorEl(null)
 
    const open = Boolean(anchorEl)
-   const id = open ? 'popover' : undefined
+   const id = 'popover'
 
    return (
       <ListItem alignItems='flex-start' sx={{ marginY: 1 }}>
-         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', columnGap: 8, alignItems: 'center' }}>
+         <Box
+            sx={{
+               width: '100%',
+               display: 'flex',
+               flexDirection: 'column',
+               justifyContent: 'space-between',
+               alignItems: 'stretch',
+               '@media (min-width: 600px)': { flexDirection: 'row', alignItems: 'center' },
+            }}
+         >
+            <Box
+               sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  '@media (min-width: 600px)': { justifyContent: 'flex-start', columnGap: 8 },
+               }}
+            >
                <h3>{props.name}</h3>
                <p>
                   {props.sumOfTasks} {props.sumOfTasks === 1 ? 'task' : 'tasks'}

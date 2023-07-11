@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import AddButton from '../AddButton'
 import { useAuth } from '../../hooks/useAuth'
 
-type CategoryProps = {
+type Category = {
    id: number
    name: string
    tasks: number[]
@@ -18,19 +18,20 @@ type CategoryProps = {
 
 const CategoryList = () => {
    const { userId, logout } = useAuth()
+   const navigate = useNavigate()
+
    const [open, setOpen] = useState(false)
    const handleOpen = () => setOpen(true)
    const handleClose = () => setOpen(false)
-   const navigate = useNavigate()
 
    const { data, loading, error } = useQuery(GET_USER_CATEGORIES, {
       variables: { userId: userId ? +userId : null },
    })
    const [createCategory] = useMutation(CREATE_CATEGORY)
 
-   const handleAddCategory = (values: { name: string }) => {
+   const handleAddCategory = async (values: { name: string }) => {
       try {
-         createCategory({
+         await createCategory({
             variables: {
                input: {
                   name: values.name,
@@ -41,16 +42,29 @@ const CategoryList = () => {
             refetchQueries: [{ query: GET_USER_CATEGORIES, variables: { userId: userId ? +userId : null } }],
          })
          handleClose()
-      } catch (error: any) {
-         console.error(error?.message)
+      } catch (error) {
+         console.error(error)
       }
    }
 
+   if (loading) return <p>Loading...</p>
+   if (error) return <p>Error: {error.message}</p>
+
    return (
       <>
-         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant='h3'>Categories</Typography>
-            <Box sx={{ display: 'flex', gap: 2 }}>
+         <Box
+            sx={{
+               display: 'flex',
+               flexDirection: 'column',
+               alignItems: 'center',
+               justifyContent: 'space-between',
+               '@media (min-width: 600px)': { flexDirection: 'row' },
+            }}
+         >
+            <Typography variant='h3' sx={{ fontSize: '42px', '@media (min-width: 600px)': { fontSize: '48px' } }}>
+               Categories
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
                <AddButton handleClick={handleOpen} />
                <AddCategory open={open} handleClose={handleClose} submitHandler={handleAddCategory} />
                <Button
@@ -67,36 +81,17 @@ const CategoryList = () => {
             </Box>
          </Box>
          <List>
-            {loading ? (
-               <Skeleton component='li' variant='text' width='100%' height='500px' />
-            ) : (
-               <>
-                  {error && (
-                     <Typography variant='h6' component='li' sx={{ textAlign: 'center', fontWeight: 'normal', marginTop: '40px' }}>
-                        {error.message}
-                     </Typography>
-                  )}
-                  {data && data.user.categories.length === 0 && (
-                     <Typography variant='h6' component='li' sx={{ textAlign: 'center', fontWeight: 'normal', marginTop: '40px' }}>
-                        You don't have any categories yet. Click the add button to create a new category.
-                     </Typography>
-                  )}
-               </>
+            {data.user.categories.length === 0 && (
+               <Typography variant='h6' component='li' sx={{ textAlign: 'center', fontWeight: 'normal', marginTop: '40px' }}>
+                  You don't have any categories yet. Click the add button to create a new category.
+               </Typography>
             )}
-            {!loading &&
-               !error &&
-               data.user.categories.map((category: CategoryProps) => (
-                  <>
-                     <CategoryItem
-                        key={category.id}
-                        categoryId={category.id}
-                        name={category.name}
-                        sumOfTasks={category.tasks.length}
-                        dateCreated={category.dateCreated}
-                     />
-                     <Divider component='li' />
-                  </>
-               ))}
+            {data.user.categories.map((el: Category) => (
+               <>
+                  <CategoryItem key={el.id} categoryId={el.id} name={el.name} sumOfTasks={el.tasks.length} dateCreated={el.dateCreated} />
+                  <Divider component='li' />
+               </>
+            ))}
          </List>
       </>
    )

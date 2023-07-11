@@ -27,6 +27,7 @@ const REFRESH_TOKEN = gql`
       refreshToken(refreshToken: $refreshToken) {
          accessToken
          refreshToken
+         userId
       }
    }
 `
@@ -65,4 +66,20 @@ const CREATE_TASK = gql`
    }
 `
 
-export { SIGNUP_USER, LOGIN_USER, REFRESH_TOKEN, CREATE_CATEGORY, UPDATE_CATEGORY, DELETE_CATEGORY, CREATE_TASK }
+const UPDATE_TASK = gql`
+   mutation UpdateTask($taskId: Float!, $input: CreateTaskDto!) {
+      updateTask(id: $taskId, input: $input) {
+         name
+      }
+   }
+`
+
+const DELETE_TASK = gql`
+   mutation DeleteTask($taskId: Float!) {
+      deleteTask(id: $taskId) {
+         name
+      }
+   }
+`
+
+export { SIGNUP_USER, LOGIN_USER, REFRESH_TOKEN, CREATE_CATEGORY, UPDATE_CATEGORY, DELETE_CATEGORY, CREATE_TASK, UPDATE_TASK, DELETE_TASK }

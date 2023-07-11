@@ -8,12 +8,12 @@ type Props = {
    submitHandler: () => void
 }
 
-const DeleteCategory = (props: Props) => {
+const DeleteTask = (props: Props) => {
    return (
-      <Popup open={props.open} handleClose={props.handleClose} title='Delete category'>
+      <Popup open={props.open} handleClose={props.handleClose} title='Edit task'>
          <Formik initialValues={{}} onSubmit={props.submitHandler}>
             <Form>
-               <Button sx={{ fontWeight: 'bold', marginTop: 1 }} fullWidth type='submit' variant='contained'>
+               <Button sx={{ fontWeight: 'bold' }} fullWidth type='submit' variant='contained'>
                   Delete
                </Button>
             </Form>
@@ -22,4 +22,4 @@ const DeleteCategory = (props: Props) => {
    )
 }
 
-export default DeleteCategory
+export default DeleteTask

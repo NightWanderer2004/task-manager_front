@@ -2,10 +2,13 @@ import { Button, Stack, TextField } from '@mui/material'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import Popup from '../../Popup'
-import dayjs, { Dayjs } from 'dayjs'
 import { DatePicker } from '@mui/x-date-pickers'
+import dayjs, { Dayjs } from 'dayjs'
 
 type Props = {
+   name: string
+   dateStart: Dayjs
+   dateEnd: Dayjs
    open: boolean
    handleClose: () => void
    submitHandler: (values: { name: string; dateStart: Dayjs; dateEnd: Dayjs }) => void
@@ -17,18 +20,15 @@ const validationSchema = Yup.object().shape({
    dateEnd: Yup.date().required('End date is required'),
 })
 
-const AddTask = (props: Props) => {
-   const today = dayjs()
-   const tomorrow = dayjs().add(1, 'day')
-
+const EditTask = (props: Props) => {
    const initValues = {
-      name: '',
-      dateStart: today,
-      dateEnd: tomorrow,
+      name: props.name,
+      dateStart: dayjs(props.dateStart),
+      dateEnd: dayjs(props.dateEnd),
    }
 
    return (
-      <Popup open={props.open} handleClose={props.handleClose} title='Add task'>
+      <Popup open={props.open} handleClose={props.handleClose} title='Edit task'>
          <Formik initialValues={initValues} validationSchema={validationSchema} onSubmit={props.submitHandler}>
             {({ errors, values, setFieldValue }) => (
                <Form>
@@ -42,7 +42,7 @@ const AddTask = (props: Props) => {
                      <DatePicker label='End date' value={values.dateEnd} onChange={(newValue: Dayjs | null) => setFieldValue('dateEnd', newValue)} />
                   </Stack>
                   <Button sx={{ fontWeight: 'bold' }} fullWidth type='submit' variant='contained'>
-                     Add
+                     Save
                   </Button>
                </Form>
             )}
@@ -51,4 +51,4 @@ const AddTask = (props: Props) => {
    )
 }
 
-export default AddTask
+export default EditTask

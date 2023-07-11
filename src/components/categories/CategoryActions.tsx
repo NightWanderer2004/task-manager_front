@@ -35,9 +35,9 @@ const CategoryActions = (props: Props) => {
    const [updateCategory] = useMutation(UPDATE_CATEGORY)
    const [deleteCategory] = useMutation(DELETE_CATEGORY)
 
-   const handleUpdateCategory = (values: { name: string }) => {
+   const handleUpdateCategory = async (values: { name: string }) => {
       try {
-         updateCategory({
+         await updateCategory({
             variables: {
                categoryId: Math.floor(props.categoryId),
                input: {
@@ -52,9 +52,9 @@ const CategoryActions = (props: Props) => {
       }
    }
 
-   const handleDeleteCategory = () => {
+   const handleDeleteCategory = async () => {
       try {
-         deleteCategory({
+         await deleteCategory({
             variables: {
                categoryId: Math.floor(props.categoryId),
             },
@@ -66,12 +66,10 @@ const CategoryActions = (props: Props) => {
       }
    }
 
-   const handleMore = () => {
-      navigate(`/${props.categoryId}`)
-   }
+   const handleMore = () => navigate(`/${props.categoryId}`)
 
    return (
-      <Box sx={{ display: 'flex', columnGap: 2, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', alignSelf: 'center', columnGap: 2, alignItems: 'center' }}>
          <Button aria-describedby={props.popoverId} variant='text' onClick={props.handleClick}>
             Actions
          </Button>

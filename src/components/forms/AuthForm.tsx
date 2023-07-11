@@ -13,7 +13,7 @@ export type FormValues = {
    password: string
 }
 
-type FormProps = {
+type Props = {
    handleSubmit: (values: FormValues) => Promise<void>
    buttonText: string
    error: string | undefined | any
@@ -21,9 +21,9 @@ type FormProps = {
    linkTo: string
 }
 
-const AuthForm = ({ handleSubmit, buttonText, error, linkText, linkTo }: FormProps) => {
+const AuthForm = (props: Props) => {
    const handleFormSubmit = async (values: FormValues) => {
-      await handleSubmit(values)
+      await props.handleSubmit(values)
    }
 
    return (
@@ -38,7 +38,7 @@ const AuthForm = ({ handleSubmit, buttonText, error, linkText, linkTo }: FormPro
             }}
          >
             <Typography component='h1' variant='h5' sx={{ marginBottom: 3 }}>
-               {buttonText}
+               {props.buttonText}
             </Typography>
             <Formik initialValues={{ email: '', password: '' }} validationSchema={validationSchema} onSubmit={handleFormSubmit}>
                {({ errors }) => (
@@ -50,8 +50,8 @@ const AuthForm = ({ handleSubmit, buttonText, error, linkText, linkTo }: FormPro
                               as={TextField}
                               label='Email'
                               fullWidth
-                              error={!!errors.email || !!error}
-                              helperText={error || <ErrorMessage name='email' />}
+                              error={!!errors.email || !!props.error}
+                              helperText={props.error || <ErrorMessage name='email' />}
                            />
                         </Grid>
                         <Grid item xs={12}>
@@ -67,12 +67,12 @@ const AuthForm = ({ handleSubmit, buttonText, error, linkText, linkTo }: FormPro
                         </Grid>
                      </Grid>
                      <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                        {buttonText}
+                        {props.buttonText}
                      </Button>
                      <Grid container justifyContent='center'>
                         <Grid item>
-                           <RouterLink to={linkTo}>
-                              <Link>{linkText}</Link>
+                           <RouterLink to={props.linkTo}>
+                              <Link>{props.linkText}</Link>
                            </RouterLink>
                         </Grid>
                      </Grid>

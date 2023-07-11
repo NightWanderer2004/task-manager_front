@@ -3,10 +3,11 @@ import { ReactNode, createContext, useContext, useEffect, useState } from 'react
 interface AuthContextType {
    accessToken: string | null
    refreshToken: string | null
-   userId: string | number | null
-   login: (token: string, refreshToken: string, userId?: string) => void
+   userId: string | null
+   login: (token: string, refreshToken: string, userId: string) => void
    logout: () => void
 }
+
 type Props = {
    children: ReactNode
 }
@@ -19,27 +20,27 @@ const AuthProvider = ({ children }: Props) => {
    const [userId, setUserId] = useState(localStorage.getItem('userId') || null)
 
    useEffect(() => {
-      if (accessToken && userId) {
-         localStorage.setItem('accessToken', accessToken)
-         localStorage.setItem('userId', userId)
-      }
-   }, [accessToken, userId])
+      if (accessToken) localStorage.setItem('accessToken', accessToken)
+      else localStorage.removeItem('accessToken')
+   }, [accessToken])
 
    useEffect(() => {
-      if (refreshToken) {
-         localStorage.setItem('refreshToken', refreshToken)
-      } else {
-         localStorage.removeItem('refreshToken')
-      }
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken)
+      else localStorage.removeItem('refreshToken')
    }, [refreshToken])
 
-   const login = (token: string, refreshToken: string, userId?: string) => {
+   useEffect(() => {
+      if (userId) localStorage.setItem('userId', userId)
+      else localStorage.removeItem('userId')
+   }, [userId])
+
+   const login = (token: string, refreshToken: string, userId: string) => {
       setAccessToken(token)
       setRefreshToken(refreshToken)
-      setUserId(userId || null)
+      setUserId(userId)
       localStorage.setItem('accessToken', token)
       localStorage.setItem('refreshToken', refreshToken)
-      localStorage.setItem('userId', userId || '')
+      localStorage.setItem('userId', userId)
    }
 
    const logout = () => {
@@ -64,9 +65,8 @@ const AuthProvider = ({ children }: Props) => {
 
 const useAuth = (): AuthContextType => {
    const context = useContext(AuthContext)
-   if (!context) {
-      throw new Error('useAuth must be used within an AuthProvider')
-   }
+   if (!context) throw new Error('useAuth must be used within an AuthProvider')
+
    return context
 }
 
